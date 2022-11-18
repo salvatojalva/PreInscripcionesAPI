@@ -4,7 +4,9 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Build.ObjectModelRemoting;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using PreInscripcionesAPI.Models;
 
 namespace PreInscripcionesAPI.Controllers
@@ -39,6 +41,27 @@ namespace PreInscripcionesAPI.Controllers
             }
 
             return carrera;
+        }
+
+        // GET: api/BySedeJornada/5/4
+        [HttpGet("BySedeJornada/{sede_id}/{jornada_id}")]
+        public async Task<ActionResult<IEnumerable<Carrera>>> GetCarreraBySedeJornada(string sede_id, int jornada_id = 0)
+        {
+            
+            var carreras = await (from sedeJornadas in _context.SedeCarreraJornada
+            join carreraTemp in _context.Carreras on sedeJornadas.IdCarrera equals carreraTemp.IdCarrera into tmp
+            from m in tmp.DefaultIfEmpty()
+                where sedeJornadas.IdSede== sede_id
+                where sedeJornadas.IdJornada == jornada_id
+
+            select new Carrera
+            {
+                IdCarrera = sedeJornadas.IdCarrera,
+                NomCarrera = m.NomCarrera
+            }
+            ).ToListAsync();
+
+            return carreras;
         }
 
         // PUT: api/Carreras/5
