@@ -45,7 +45,7 @@ namespace PreInscripcionesAPI.Controllers
 
         // GET: api/BySedeJornada/5/4
         [HttpGet("BySedeJornada/{sede_id}/{jornada_id}")]
-        public async Task<ActionResult<IEnumerable<Carrera>>> GetCarreraBySedeJornada(string sede_id, int jornada_id = 0)
+        public async Task<ActionResult<IEnumerable<CarreraForList>>> GetCarreraBySedeJornada(string sede_id, int jornada_id = 0)
         {
             
             var carreras = await (from sedeJornadas in _context.SedeCarreraJornada
@@ -54,11 +54,13 @@ namespace PreInscripcionesAPI.Controllers
                 where sedeJornadas.IdSede== sede_id
                 where sedeJornadas.IdJornada == jornada_id
 
-            select new Carrera
-            {
-                IdCarrera = sedeJornadas.IdCarrera,
-                NomCarrera = m.NomCarrera
-            }
+                select new CarreraForList
+                {
+                    IdCarrera = sedeJornadas.IdCarrera,
+                    NomCarrera = m.NomCarrera,
+                    idSedeCarreraJornada = sedeJornadas.IdSedeCarreraJornada
+              
+                }
             ).ToListAsync();
 
             return carreras;

@@ -11,3 +11,12 @@ public partial class Carrera
 
     public virtual ICollection<SedeCarreraJornadum> SedeCarreraJornada { get; } = new List<SedeCarreraJornadum>();
 }
+
+public partial class CarreraForList
+{
+    public string IdCarrera { get; set; } = null!;
+
+    public string NomCarrera { get; set; } = null!;
+
+    public int idSedeCarreraJornada { get; set; } = 0;
+}
